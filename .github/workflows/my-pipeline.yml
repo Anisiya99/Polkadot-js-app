@@ -42,6 +42,13 @@ jobs:
         if: github.event_name == 'push'
         run: docker push ${{ secrets.DOCKER_USERNAME }}/polkadot-app
 
+      - name: Debug Docker
+        run: |
+          which docker
+          docker --version
+          sudo systemctl status docker || true
+
+   
       - name: Deploy to EC2
         if: github.event_name == 'push'
         run: |
@@ -49,8 +56,7 @@ jobs:
           chmod 400 key.pem
 
           ssh -o StrictHostKeyChecking=no -i key.pem ${{ secrets.EC2_USER }}@${{ secrets.EC2_HOST }} "
-            docker pull ${{ secrets.DOCKER_USERNAME }}/polkadot-app:latest &&
-            docker stop app || true &&
-            docker rm app || true &&
-            docker run -d -p 3000:3000 --name app ${{ secrets.DOCKER_USERNAME }}/polkadot-app:latest
+            which docker
+            docker --version
           "
+
