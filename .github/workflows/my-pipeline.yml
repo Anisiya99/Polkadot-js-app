@@ -36,11 +36,11 @@ jobs:
 
       - name: Build Docker Image
         if: github.event_name == 'push'
-        run: docker build -t ${{ secrets.DOCKER_USERNAME }}/polkadot-app -f docker/Dockerfile .
+        run: docker build -t ${{ secrets.DOCKER_USERNAME }}/polkadot-app:latest -f docker/Dockerfile .
 
       - name: Push Docker Image
         if: github.event_name == 'push'
-        run: docker push ${{ secrets.DOCKER_USERNAME }}/polkadot-app
+        run: docker push ${{ secrets.DOCKER_USERNAME }}/polkadot-app:latest
 
       - name: Debug Docker
         run: |
