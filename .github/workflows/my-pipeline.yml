@@ -63,20 +63,15 @@ jobs:
           chmod 600 key.pem
 
       # Run Ansible Playbook
+            # Run Ansible Playbook
       - name: Deploy with Ansible
         env:
           ANSIBLE_HOST_KEY_CHECKING: "False"
         run: |
-          # Ensure Python is present on the remote host
-          ansible all -i ansible/inventory.ini -m raw -a "which python3 || sudo apt-get update && sudo apt-get install -y python3" \
-            --private-key key.pem -u ${{ secrets.EC2_USER }} --ssh-common-args='-o StrictHostKeyChecking=no'
-
-          # Run playbook with explicit interpreter and skip facts if needed
           ansible-playbook \
             -i ansible/inventory.ini \
             ansible/playbook.yml \
             --private-key key.pem \
             -u ${{ secrets.EC2_USER }} \
             --ssh-common-args='-o StrictHostKeyChecking=no' \
-            -e "ansible_python_interpreter=/usr/bin/python3" \
-            --skip-tags "gather_facts"
+            -e "ansible_python_interpreter=/usr/bin/python3"
