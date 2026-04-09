@@ -64,4 +64,12 @@ jobs:
 
       # Run Ansible Playbook
       - name: Deploy with Ansible
-        run: ansible-playbook -i ansible/inventory.ini ansible/playbook.yml --private-key key.pem -u ${{ secrets.EC2_USER }}
+        env:
+          ANSIBLE_HOST_KEY_CHECKING: "False"
+        run: |
+          ansible-playbook \
+            -i ansible/inventory.ini \
+            ansible/playbook.yml \
+            --private-key key.pem \
+            -u ${{ secrets.EC2_USER }} \
+            --ssh-common-args='-o StrictHostKeyChecking=no'
