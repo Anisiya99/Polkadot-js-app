@@ -64,5 +64,4 @@ jobs:
 
       # Run Ansible Playbook
       - name: Deploy with Ansible
-        run: ansible-playbook -i ansible/inventory.ini ansible/playbook.yml \
-             --private-key key.pem -u ${{ secrets.EC2_USER }}
+        run: ansible-playbook -i ansible/inventory.ini ansible/playbook.yml --private-key key.pem -u ${{ secrets.EC2_USER }}
