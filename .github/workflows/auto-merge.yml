@@ -1,8 +1,6 @@
 name: bot
 
-on:
-  pull_request:
-    types: [labeled]
+on: workflow_dispatch
 
 jobs:
   merge:
