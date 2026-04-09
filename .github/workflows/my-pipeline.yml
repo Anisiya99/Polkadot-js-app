@@ -52,5 +52,5 @@ jobs:
       # Run Ansible Playbook (already installed on your EC2/local machine)
       - name: Deploy with Ansible
         if: github.event_name == 'push'
-        run: ansible-playbook -i ansible/inventory.ini ansible/deploy.yml \
+        run: ansible-playbook -i ansible/inventory.ini ansible/playbook.yml \
               --private-key key.pem -u ${{ secrets.EC2_USER }}
