@@ -13,31 +13,39 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
+      # Checkout repo
       - name: Checkout
         uses: actions/checkout@v4
 
+      # Setup Node
       - name: Setup Node
         uses: actions/setup-node@v4
         with:
           node-version: 20
 
+      # Install Yarn
       - name: Install Yarn
         run: npm install -g yarn
 
+      # Install dependencies
       - name: Install Dependencies
         run: yarn install
 
+      # Build app
       - name: Build App
         run: yarn build
 
+      # Docker login
       - name: Docker Login
         if: github.event_name == 'push'
         run: echo "${{ secrets.DOCKER_PASSWORD }}" | docker login -u "${{ secrets.DOCKER_USERNAME }}" --password-stdin
 
+      # Build Docker image
       - name: Build Docker Image
         if: github.event_name == 'push'
-        run: docker build -t ${{ secrets.DOCKER_USERNAME }}/polkadot-app:latest -f docker/Dockerfile .
+        run: docker build -t ${{ secrets.DOCKER_USERNAME }}/polkadot-app:latest -f Polkadot-js-app/docker/Dockerfile .
 
+      # Push Docker image
       - name: Push Docker Image
         if: github.event_name == 'push'
         run: docker push ${{ secrets.DOCKER_USERNAME }}/polkadot-app:latest
@@ -49,8 +57,12 @@ jobs:
           echo "${{ secrets.EC2_KEY }}" > key.pem
           chmod 600 key.pem
 
-      # Run Ansible Playbook (already installed on your EC2/local machine)
+      # Debug: list ansible directory
+      - name: List ansible directory
+        run: ls -R Polkadot-js-app/ansible
+
+      # Run Ansible Playbook
       - name: Deploy with Ansible
         if: github.event_name == 'push'
-        run: ansible-playbook -i ansible/inventory.ini ansible/playbook.yml \
+        run: ansible-playbook -i Polkadot-js-app/ansible/inventory.ini Polkadot-js-app/ansible/playbook.yml \
               --private-key key.pem -u ${{ secrets.EC2_USER }}
