@@ -42,21 +42,15 @@ jobs:
         if: github.event_name == 'push'
         run: docker push ${{ secrets.DOCKER_USERNAME }}/polkadot-app:latest
 
-      - name: Debug Docker
-        run: |
-          which docker
-          docker --version
-          sudo systemctl status docker || true
-
-   
-      - name: Deploy to EC2
+      # Configure SSH key for Ansible
+      - name: Configure SSH key
         if: github.event_name == 'push'
         run: |
           echo "${{ secrets.EC2_KEY }}" > key.pem
           chmod 600 key.pem
 
-          ssh -o StrictHostKeyChecking=no -i key.pem ${{ secrets.EC2_USER }}@${{ secrets.EC2_HOST }} "
-            which docker
-            docker --version
-          "
-
+      # Run Ansible Playbook (already installed on your EC2/local machine)
+      - name: Deploy with Ansible
+        if: github.event_name == 'push'
+        run: ansible-playbook -i ansible/inventory.ini ansible/deploy.yml \
+              --private-key key.pem -u ${{ secrets.EC2_USER }}
