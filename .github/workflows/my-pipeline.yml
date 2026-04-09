@@ -43,7 +43,8 @@ jobs:
       # Build Docker image
       - name: Build Docker Image
         if: github.event_name == 'push'
-        run: docker build -t ${{ secrets.DOCKER_USERNAME }}/polkadot-app:latest -f Polkadot-js-app/docker/Dockerfile Polkadot-js-app
+        run: docker build -t ${{ secrets.DOCKER_USERNAME }}/polkadot-app:latest \
+              -f Polkadot-js-app/docker/Dockerfile .
 
       # Push Docker image
       - name: Push Docker Image
