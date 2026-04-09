@@ -1,5 +1,10 @@
 - hosts: web
   gather_facts: no
+  tasks:
+    - name: Install Docker
+      yum:
+        name: docker
+        state: present
   become: true
 
   tasks:
