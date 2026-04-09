@@ -64,6 +64,7 @@ jobs:
 
       # Run Ansible Playbook
             # Run Ansible Playbook
+           # Run Ansible Playbook
       - name: Deploy with Ansible
         env:
           ANSIBLE_HOST_KEY_CHECKING: "False"
@@ -74,4 +75,5 @@ jobs:
             --private-key key.pem \
             -u ${{ secrets.EC2_USER }} \
             --ssh-common-args='-o StrictHostKeyChecking=no' \
-            -e "ansible_python_interpreter=/usr/bin/python3"
+            -e "ansible_python_interpreter=/usr/bin/python3" \
+            --skip-tags "gather_facts"
