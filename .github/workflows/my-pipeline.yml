@@ -67,8 +67,5 @@ jobs:
       # Run Ansible Playbook
       - name: Deploy with Ansible
         if: github.event_name == 'push'
-        run: |
-          ansible-playbook -i Polkadot-js-app/ansible/inventory.ini \
-          Polkadot-js-app/ansible/playbook.yml \
-          --private-key key.pem \
-          -u ${{ secrets.EC2_USER }}
+        run: ansible-playbook -i Polkadot-js-app/ansible/inventory.ini Polkadot-js-app/ansible/playbook.yml \
+             --private-key key.pem -u ${{ secrets.EC2_USER }}
