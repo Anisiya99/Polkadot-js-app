@@ -43,27 +43,32 @@ jobs:
       # Build Docker image
       - name: Build Docker Image
         if: github.event_name == 'push'
-        run: docker build -t ${{ secrets.DOCKER_USERNAME }}/polkadot-app:latest \
-              -f Polkadot-js-app/docker/Dockerfile .
+        run: docker build -t ${{ secrets.DOCKER_USERNAME }}/polkadot-app:latest -f Polkadot-js-app/docker/Dockerfile .
 
       # Push Docker image
       - name: Push Docker Image
         if: github.event_name == 'push'
         run: docker push ${{ secrets.DOCKER_USERNAME }}/polkadot-app:latest
 
-      # Configure SSH key for Ansible
+      # Install Ansible
+      - name: Install Ansible
+        if: github.event_name == 'push'
+        run: |
+          sudo apt update
+          sudo apt install -y ansible
+
+      # Configure SSH key
       - name: Configure SSH key
         if: github.event_name == 'push'
         run: |
           echo "${{ secrets.EC2_KEY }}" > key.pem
           chmod 600 key.pem
 
-      # Debug: list ansible directory
-      - name: List ansible directory
-        run: ls -R Polkadot-js-app/ansible
-
       # Run Ansible Playbook
       - name: Deploy with Ansible
         if: github.event_name == 'push'
-        run: ansible-playbook -i Polkadot-js-app/ansible/inventory.ini Polkadot-js-app/ansible/playbook.yml \
-              --private-key key.pem -u ${{ secrets.EC2_USER }}
+        run: |
+          ansible-playbook -i Polkadot-js-app/ansible/inventory.ini \
+          Polkadot-js-app/ansible/playbook.yml \
+          --private-key key.pem \
+          -u ${{ secrets.EC2_USER }}
