@@ -1,13 +1,17 @@
 - hosts: web
-  gather_facts: no
-  tasks:
-    - name: Install Docker
-      yum:
-        name: docker
-        state: present
   become: true
+  gather_facts: false
+
+  vars:
+    ansible_python_interpreter: /usr/bin/python3
 
   tasks:
+    - name: Install Python3
+      raw: sudo yum install -y python3
+
+    - name: Gather facts
+      setup:
+
     - name: Install Docker
       yum:
         name: docker
@@ -37,4 +41,4 @@
       ignore_errors: yes
 
     - name: Run container
-      command: docker run -d -p 3000:3000 --name app anisiya99/polkadot-app:latest
+      command: docker run -d -p 3000:80 --name app anisiya99/polkadot-app:latest
