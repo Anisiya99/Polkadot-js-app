@@ -1,10 +1,5 @@
 name: Chain endpoints
-on:
-  schedule:
-    # twice daily (mornings/afternoons, the latter being busy)
-    # - cron:  '50 0/12 * * *'
-    # once daily (early mornings, 02:50 GMT, generally not busy)
-    - cron:  '50 2 * * *'
+on: workflow_dispatch
 
 jobs:
   endpoints:
