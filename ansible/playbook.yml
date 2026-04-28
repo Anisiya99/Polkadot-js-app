@@ -2,43 +2,31 @@
   become: true
   gather_facts: false
 
-  vars:
-    ansible_python_interpreter: /usr/bin/python3
-
   tasks:
     - name: Install Python3
       raw: sudo yum install -y python3
 
-    - name: Gather facts
-      setup:
-
     - name: Install Docker
-      yum:
-        name: docker
-        state: present
+      raw: sudo yum install -y docker
 
     - name: Start Docker
-      service:
-        name: docker
-        state: started
-        enabled: true
+      raw: sudo systemctl start docker
+
+    - name: Enable Docker
+      raw: sudo systemctl enable docker
 
     - name: Add ec2-user to docker group
-      user:
-        name: ec2-user
-        groups: docker
-        append: yes
+      raw: sudo usermod -aG docker ec2-user
 
     - name: Pull Docker image
-      command: docker pull anisiya99/polkadot-app:latest
+      raw: docker pull anisiya99/polkadot-app:latest
 
     - name: Stop old container
-      command: docker stop app
-      ignore_errors: yes
+      raw: docker stop app || true
 
     - name: Remove old container
-      command: docker rm app
-      ignore_errors: yes
+      raw: docker rm app || true
 
     - name: Run container
-      command: docker run -d -p 3000:80 --name app anisiya99/polkadot-app:latest
+      raw: docker run -d -p 3000:80 --name app anisiya99/polkadot-app:latest
+      
