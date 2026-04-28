@@ -59,7 +59,7 @@ jobs:
       # Configure SSH key
       - name: Configure SSH key
         run: |
-          echo "${{ secrets.EC2_KEY }}" > terra-key.pem
+          echo "${{ secrets.EC2_KEY }}" | tr -d '\r' > terra-key.pem
           chmod 400 terra-key.pem
 
       # Run Ansible Playbook
